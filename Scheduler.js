@@ -53,7 +53,7 @@ function nextTime(obj,out) {
 	}
 	else if(now.getTime() > start.getTime() ) {
 		if(now.getTime() > end.getTime() ) {
-			console.log('Interval already over');
+			throw ({err:'Interval already over'});
 			return null;
 		}
 		var factor = 0;
@@ -117,7 +117,12 @@ Scheduler.parse = function (parseMe) {
 			}
 		}
 		else if(obj.every !== undefined) {
-			if(nextTime(obj,out) === null) out = null;
+			try { 
+				if(nextTime(obj,out) === null) out = null;
+			}
+			catch(error) {
+				console.log(error);
+			}
 		}
 	
 	}
@@ -156,8 +161,18 @@ Scheduler.parse = function (parseMe) {
 				if(Date.today().isAfter(d) ) {
 					d = Date.parse('next '+day);
 				}
+				
+				try {
+					if(nextTime(obj,d) === null) d = null;
+				}
+				catch(err) {
+					d = Date.parse(day);
 
-				if(nextTime(obj,d) === null) d = null;
+					if(Date.today().same().day(d)) {
+						d = Date.parse('next '+day);
+						nextTime(obj,d);
+					}
+				}
 				potDates.push(d);
 			}
 			
@@ -207,7 +222,9 @@ var UnitTests = [
 			'Every 45 seconds between 20:00 and 04:00 on Mon,Tue',
 			'Every 30 seconds between 12:00 and 14:00 on Tuesday',
 			'Every 30 seconds between 10:00 and 14:00 on Mon,Tue',
-			'Every 46 seconds between 11:00 and 16:39 ON Tue' //TEST FAILS FIX  THIS TEST
+			'Every 46 seconds between 02:00 and 03:39 ON Wed', 
+			'Every 46 seconds on Wed', 
+			'At 02:00 on Wed'
 			];
 
 
@@ -227,3 +244,4 @@ for(var i = 0; i < UnitTests.length; i++) {
 }
 
 */
+

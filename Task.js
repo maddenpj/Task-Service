@@ -70,7 +70,7 @@ Job.prototype.run = function () {
 		self.stderr = stderr;
 		self.endRunTime = new Date();
 	});
-}
+
 
 function Task(name,config) { 
 	this.name = name;
