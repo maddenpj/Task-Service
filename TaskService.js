@@ -1,4 +1,8 @@
 var daemon = require('daemon');
+console.log('Daemonizing');
+daemon.start();
+process.chdir('/home/patrick/src/NxtNode/apps/taskservice');
+
 
 var Task = require('./Task.js').Task;
 var TaskManager = require('./Task.js').TaskManager;
@@ -9,17 +13,25 @@ var jobs = [];
 var id = 0;
 
 var taskManager = new TaskManager();
-taskManager.loadConfig('./Config-Test.js');
+if(process.argv[2] === undefined ) {
+	console.log('node TaskService.js <config>');
+	process.exit(0);
+}
+else {
+	taskManager.loadConfig('./'+process.argv[2]);
+}
+
+
 
 var controlPort = new Control();
-controlPort.start(6666);
+controlPort.start(6667);
 
 function main() {
 	taskManager.scheduleJobs();
 	taskManager.runJobs();
 }
 
-daemon.start();
+
 setInterval(main, 1000);
 
 
@@ -53,8 +65,43 @@ controlPort.register('jobs', function (jobName) {
 controlPort.register('menu', function () {
 	var menuString = '-------- Task Service --------\n\n';
 		menuString+= 'tasks <Task Name>\n    - Displays the list of tasks or task details if Task Name is given\n\n';
-		menuString+= 'jobs  <Job ID>\n    - Displays the list of jobs or job details if Job ID is given\n';
+		menuString+= 'jobs\n    - Displays lists of scheduled jobs and current jobs\n';
+		menuString+= 'enable <Task Name>\n    - Enables a job for scheduling\n';
+		menuString+= 'disable <Task Name>\n    - Disables a job for scheduling\n';
+		menuString+= 'rerun <Task Name>\n    - Reruns the task\'s current job\n';
+		menuString+= 'retry <Task Name>\n    - Restarts Waiting jobs\n';
+		menuString+= 'set <State> <Task Name>\n    - Set the task\'s state\n';
+		menuString+= 'cancel <Task Name>\n    - Cancels the task\'s scheduled job\n';
+		menuString+= 'cancelD <Task Name>\n    - Cancels and disables the task \n';
+		menuString+= 'date\n    - Current Date/Time\n';
+		menuString+= 'shutdown\n    - Shutsdown the Task Service\n';
+		
 	return menuString;
+});
+
+controlPort.register('enable', function (task) {
+	return taskManager.enable(task)+'\n';
+});
+controlPort.register('disable', function (task) {
+	return taskManager.disable(task)+'\n';
+});
+controlPort.register('rerun',function (task) {
+	return taskManager.rerun(task) + '\n';
+});
+controlPort.register('retry',function (task) {
+	return taskManager.retry(task) + '\n';
+});
+controlPort.register('set', function (state,task) {
+	return taskManager.state(task,state)+'\n';
+});
+controlPort.register('cancel', function (task) {
+	return taskManager.cancel(task)+'\n';
+});
+controlPort.register('cancelD', function (task) {
+	return (taskManager.cancel(task) + '\n' + taskManager.disable(task));
+});
+controlPort.register('shutdown', function () {
+	process.exit(0);
 });
 controlPort.register('date', function () {
 
@@ -62,58 +109,3 @@ controlPort.register('date', function () {
 	return d.toLocaleString()+'\n'; 
 });
 
-/*
-function main() {	
-	
-	for(var i in taskManager.queue) {
-		if(!taskManager.queue[i].active) {
-			var jj = taskManager.queue[i].spawnJob();
-			taskManager.queue[i].active = true;
-			taskManager.queue[i].activeJob = jj;
-			jobs.push(jj);
-		}
-	}
-	var now = new Date();
-	//console.log('Now: ' + now);
-	for(var i = 0; i < jobs.length; i++) {
-	//	console.log(i+': '+ jobs[i].scheduledTime + ' ' + jobs[i].task + ' ' + jobs[i].state);
-		if( jobs[i].scheduledTime === undefined || jobs[i].scheduledTime === null) continue;
-		
-		if( jobs[i].scheduledTime.getTime() - now.getTime() <= 0 && jobs[i].state === 'Queued' ) {	
-		
-			if(taskManager.queue[jobs[i].task].depends === undefined) {		
-				jobs[i].state = 'Running';
-				jobs[i].run();
-				taskManager.queue[jobs[i].task].active = false;
-				taskManager.queue[jobs[i].task].oldRunTime.setTime( jobs[i].scheduledTime.getTime() );
-			}
-			else {
-				console.log(jobs[i]);
-
-				for(var j = 0; j < jobs.length; j++) {
-					if(jobs[j].task === jobs[i].depends) {
-						if(jobs[j].state === 'Success') {
-							jobs[i].state = 'Running';
-							jobs[i].run();
-							taskManager.queue[jobs[i].task].active = false;
-//							taskManager.queue[jobs[i].task].oldRunTime.setTime( jobs[i].scheduledTime.getTime() );
-						}
-						else {
-							jobs[i].state = 'Waiting';
-						}
-					}
-				}
-			}
-
-		}
-		/*
-		if(jobs[i].rc === 0 && jobs[i].state === 'Running') {
-			jobs[i].state = 'Ran';
-		}
-	}
-	
-	
-
-	//console.log('\n');
-}
-*/

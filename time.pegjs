@@ -16,9 +16,6 @@ In = 'in' _+ arg1:(d:month [ ,\/]* {return d})+ {return {in :arg1} }
 Date = 'date' _+ arg1:date {return { date: arg1}}
 
 
-_ = [ \t\n\r]
-
-
 interval = 'seconds' / 'hours' / 'minutes' / 'second' / 'hour' / 'minute'
 time = t:([0-2][0-9]':'[0-5][0-9]) {return t.join('') }
 word = w:[a-zA-Z]+ { return w.join('') }
@@ -53,3 +50,4 @@ Friday     = ('friday' / 'fri') { return 5; }
 Saturday   = ('saturday' / 'sat' ) { return 6; }
 Sunday     = ('sunday' / 'sun' ) { return 7; }
 
+_ = [ \t\n\r]

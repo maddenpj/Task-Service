@@ -129,6 +129,7 @@ Scheduler.parse = function (parseMe) {
 	else if (obj.on !== undefined) {
 		out = new Date();
 		
+
 		// Monday -> 1, Tuesday -> 2, etc 
 		obj.on.sort();
 		var potDates = [];
