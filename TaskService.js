@@ -1,8 +1,11 @@
 var daemon = require('daemon');
-console.log('Daemonizing');
-daemon.start();
-process.chdir('/home/patrick/src/NxtNode/apps/taskservice');
-
+console.log('Daemonizing\nControl port on 6666');
+if(process.argv[2] === undefined ) {
+	console.log('node TaskService.js <config>');
+	process.exit(0);
+}
+//daemon.start();
+//process.chdir('/home/patrick/src/NxtNode/apps/taskservice');
 
 var Task = require('./Task.js').Task;
 var TaskManager = require('./Task.js').TaskManager;
@@ -13,17 +16,12 @@ var jobs = [];
 var id = 0;
 
 var taskManager = new TaskManager();
-if(process.argv[2] === undefined ) {
-	console.log('node TaskService.js <config>');
-	process.exit(0);
-}
-else {
-	taskManager.loadConfig('./'+process.argv[2]);
-}
 
-
+taskManager.loadConfig('./'+process.argv[2]);
 
 var controlPort = new Control();
+Core.log('Control Port on 6666');
+
 controlPort.start(6667);
 
 function main() {
@@ -103,6 +101,10 @@ controlPort.register('cancelD', function (task) {
 controlPort.register('shutdown', function () {
 	process.exit(0);
 });
+controlPort.register('save', function () {
+    taskManager.saveState();
+});
+
 controlPort.register('date', function () {
 
 	var d = new Date();

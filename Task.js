@@ -38,15 +38,19 @@ function Task(name,config) {
 Job.prototype.run = function () {
 	var self = this;
 	self.startRunTime = new Date();
+
 	Core.log('Running ssh prod@' +this.machine  +' "'+ this.command+'"');
+	
 	cp.exec('ssh prod@' +this.machine  +' "'+ this.command+'"', function (error, stdout, stderr) {
 		if(error === null) {
 			self.rc = 0; 
 			self.state = 'DONE';
+			Core.log('Job: '+self.task + '@' + self.scheduledTime.toLocaleString()+ ' Succeed!');
 		}
 		else { 
 			self.rc = error.code;
 			self.state = 'FAIL';
+			Core.log('Job: '+self.task + '@' + self.scheduledTime.toLocaleString() +' Failed!');
 		}
 		self.stdout = stdout;
 		self.stderr = stderr;
@@ -119,13 +123,12 @@ TaskManager.prototype.runJobs = function () {
 				var run = true;
 				for (var j in task.depends) {
 					if(this.queue[task.depends[j]] === undefined) {
-						console.log('Invalid Dependency');
+						Core.log('Invalid Dependency ' + task.depends[j] + ' for ' + task.name);
 						run = false;
 						continue;
 					}
 					if(this.queue[task.depends[j]].activeJob === null) {
-						console.log('Dependency:' +j);
-						console.log(this.queue[task.depends[j]].task)
+						//console.log(this.queue[task.depends[j]].task)
 						run = false;
 						continue;
 					}
@@ -135,6 +138,7 @@ TaskManager.prototype.runJobs = function () {
 					task.runJob();
 				}
 				else {
+					Core.log('Dependencies not met for ' + task.name + ' Now Waiting');
 					job.state = 'WAIT';
 				}
 			}
@@ -227,6 +231,11 @@ TaskManager.prototype.loadConfig = function (filename) {
 	}
 }
 
+TaskManager.prototype.saveState = function () {
+    console.log (this);
+
+}
+
 TaskManager.prototype.toString = function () {
 	var out = '------ Task List ------\n\n';
 	var max = 0;
@@ -311,12 +320,12 @@ Job.prototype.toString = function (i) {
 	out+='Scheduled Time:  ' + this.scheduledTime+'\n';
 		
 	if(this.startRunTime !== null) {
-		out+='Start Time: '+ this.startRunTime +'\n';
+		out+='Start Time:      '+ this.startRunTime +'\n';
 	}
 	if(this.startRunTime !== null && this.endRunTime!== null) {
 		var duration = this.endRunTime.getTime() - this.startRunTime.getTime();
-		duration *= 1000;
-		out+='Duration:        '+ duration.toFixed(4)+'\n';
+		duration /= 1000;
+		out+='Duration:        '+ duration.toFixed(4)+'s\n';
 	}
 	if(this.rc !== null)
 		out+='Return Code:     ' + this.rc+'\n\n'; 

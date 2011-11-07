@@ -1,6 +1,5 @@
 var net = require('net');
 
-
 function Control(prompt_) {
 	this.prompt = prompt_ || '\033[1;33mTaskService> \033[22;39m';
 
