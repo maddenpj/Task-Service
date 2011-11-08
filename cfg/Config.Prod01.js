@@ -39,7 +39,7 @@ exports.Config = {
   },
 
   putnamBOD : {
-	command    : '/home/prod/process/strat/putnam/bin/putnamBeginOfDayTask.py >> /home/prod/log/task.putnamBeginOfDay.log 2>&1',
+	command    : '/home/prod/process/strat/putnam/bin/putnamBgnOfDayTask.py >> /home/prod/log/task.putnamBgnOfDay.log 2>&1',
 	node       : 'prod01',
 	schedule   : 'On Mon,Tue,Wed,Thu,Fri at 06:05',
 	depends    : ['dataBOD', 'gsReports'],
@@ -47,7 +47,7 @@ exports.Config = {
   },
 
   inRushCQBOD :  {
-	command    : '/home/prod/process/feeds/inRushCQ/bin/inRushCQBeginOfDayTask.py >> /home/prod/log/task.inRushCQBeginOfDay.log 2>&1',
+	command    : '/home/prod/process/feeds/inRushCQ/bin/inRushCQBgnOfDayTask.py >> /home/prod/log/task.inRushCQBgnOfDay.log 2>&1',
 	node       : 'prod01',
 	schedule   : 'On Mon,Tue,Wed,Thu,Fri at 06:15',
 	depends    : ['putnamBOD'],
