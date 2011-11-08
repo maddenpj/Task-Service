@@ -28,7 +28,6 @@ function Task(name,config) {
 	for(var i in config) {
 		this[i] = config[i]
 	}
-	this.active = false;
 	this.enabled = true;
 	
 	this.activeJob = null;
@@ -76,6 +75,9 @@ Task.prototype.scheduleJob = function () {
 			if(this.activeJob !== null) {
 				if(this.activeJob.state === 'DONE' || (this.activeJob.state !== 'DONE' && this.failPolicy === 'enable')) {
 					this.scheduledJob = this.spawnJob();
+				}
+				if(this.activeJob.state !== 'DONE' && this.failPolicy === 'disable') {
+					this.enabled = false;
 				}
 			}
 			else {
@@ -129,10 +131,12 @@ TaskManager.prototype.runJobs = function () {
 					}
 					if(this.queue[task.depends[j]].activeJob === null) {
 						//console.log(this.queue[task.depends[j]].task)
-						run = false;
+						//run = false;
 						continue;
 					}
-					run = run && (this.queue[task.depends[j]].activeJob.state === 'DONE');
+					else {
+						run = run && (this.queue[task.depends[j]].activeJob.state === 'DONE');
+					}
 				}
 				if(run) {
 					task.runJob();
@@ -230,6 +234,44 @@ TaskManager.prototype.loadConfig = function (filename) {
 		}
 	}
 }
+
+TaskManager.prototype.reloadConfig = function (filename) {
+	console.log('Reading Config: ' + filename);
+	
+	if(require.cache[filename]) {
+		delete require.cache[filename];
+	}
+	var nConfig;
+	try {
+		console.log('trying!');
+		nConfig = require(filename).Config;
+		console.log('done trying!');
+	}
+	catch (err) {
+		return (err);
+	}
+	
+	for(var i in nConfig.Tasks) {
+		if(this.queue[i] === undefined) {
+			this.queue[i] = new Task(i,nConfig.Tasks[i]); 
+		}
+		else {
+			var activeJob = this.queue[i].activeJob;
+			this.queue[i] = new Task(i, nConfig.Tasks[i]);
+			this.queue[i].activeJob = activeJob; 
+		}
+		
+	}
+	for(var i in this.queue) {
+		if(nConfig.Tasks[i] === undefined) {
+			delete this.queue[i];
+		}
+	}
+	this.config = nConfig;
+	return "Config Loaded Successfuly";
+}
+
+
 
 TaskManager.prototype.saveState = function () {
     console.log (this);
