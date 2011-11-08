@@ -1,35 +1,35 @@
 exports.Config = {
  Tasks : {
   dataBOD : {
-	command    : '/home/prod/process/data/bin/dataBgnOfDayTask.py >> /home/prod/log/task.dataBgnOfDay.log 2>&1',
+	command    : '/home/prod/process/data/bin/dataBgnOfDayTask.py >> /home/prod/log/task.dataBgnOfDayTask.log 2>&1',
 	node       : 'prod01',
 	schedule   : 'On Tue,Wed,Thu,Fri,Sat at 02:00',
 	failPolicy : 'enable' //or 'disable'
   },
 
   itchBOD : {
-	command    : '/home/prod/process/data/bin/itchBgnOfDayTask.py >> /home/prod/log/task.itchBgnOfDay.log 2>&1',
+	command    : '/home/prod/process/data/bin/itchBgnOfDayTask.py >> /home/prod/log/task.itchBgnOfDayTask.log 2>&1',
 	node       : 'prod01',
 	schedule   : 'On Tue,Wed,Thu,Fri,Sat at 02:00',
 	failPolicy : 'enable' //or 'disable'
   },
 
   itchEOD : {
-	command    : '/home/prod/process/data/bin/itchEndOfDayTask.py /home/prod/data/Itch4X 2 >> /home/prod/log/task.itchEndOfDay.log 2>&1',
+	command    : '/home/prod/process/data/bin/itchEndOfDayTask.py /home/prod/data/Itch4X 2 >> /home/prod/log/task.itchEndOfDayTask.log 2>&1',
 	node       : 'prod01',
 	schedule   : 'On Tue,Wed,Thu,Fri,Sat at 17:00',
 	failPolicy : 'enable' //or 'disable'
   },
 
   gsReports : {
-	command    : '/home/prod/process/brokers/GS/bin/getGSReportsTask.py >> /home/prod/log/task.getGSReports.log 2>&1',
+	command    : '/home/prod/process/brokers/GS/bin/getGSReportsTask.py >> /home/prod/log/task.getGSReportsTask.log 2>&1',
 	node       : 'prod01',
 	schedule   : 'On Mon,Tue,Wed,Thu,Fri at 06:00',
 	failPolicy : 'enable' //or 'disable'
   },
 
   putnamBOD : {
-	command    : '/home/prod/process/strat/putnam/bin/putnamBgnOfDayTask.py >> /home/prod/log/task.putnamBgnOfDay.log 2>&1',
+	command    : '/home/prod/process/strat/putnam/bin/putnamBgnOfDayTask.py >> /home/prod/log/task.putnamBgnOfDayTask.log 2>&1',
 	node       : 'prod01',
 	schedule   : 'On Mon,Tue,Wed,Thu,Fri at 06:05',
 	depends    : ['dataBOD', 'gsReports'],
@@ -37,7 +37,7 @@ exports.Config = {
   },
 
   inRushCQBOD :  {
-	command    : '/home/prod/process/feeds/inRushCQ/bin/inRushCQBgnOfDayTask.py >> /home/prod/log/task.inRushCQBgnOfDay.log 2>&1',
+	command    : '/home/prod/process/feeds/inRushCQ/bin/inRushCQBgnOfDayTask.py >> /home/prod/log/task.inRushCQBgnOfDayTask.log 2>&1',
 	node       : 'prod01',
 	schedule   : 'On Mon,Tue,Wed,Thu,Fri at 06:15',
 	depends    : ['putnamBOD'],
@@ -45,7 +45,7 @@ exports.Config = {
   },
 
   putnamLOC : {
-	command    : '/home/prod/process/strat/putnam/bin/putnamGetLocatesTask.py >> /home/prod/log/task.putnamGetLocates.log 2>&1',
+	command    : '/home/prod/process/strat/putnam/bin/putnamGetLocatesTask.py >> /home/prod/log/task.putnamGetLocatesTask.log 2>&1',
 	node       : 'prod01',
 	schedule   : 'On Mon,Tue,Wed,Thu,Fri at 08:00',
 	depends    : ['putnamBOD'],
@@ -53,7 +53,7 @@ exports.Config = {
   },
 
   putnamEOD : {
-	command    : '/home/prod/process/strat/putnam/bin/putnamEndOfDayTask.py >> /home/prod/log/task.putnamEndOfDay.log 2>&1',
+	command    : '/home/prod/process/strat/putnam/bin/putnamEndOfDayTask.py >> /home/prod/log/task.putnamEndOfDayTask.log 2>&1',
 	node       : 'prod01',
 	schedule   : 'On Mon,Tue,Wed,Thu,Fri at 18:00',
 	depends    : ['putnamBOD'],
@@ -61,7 +61,7 @@ exports.Config = {
   },
 
   inRushCQEOD : {
-	command    : '/home/prod/process/strat/putnam/bin/inRushCQEndOfDayTask.py >> /home/prod/log/task.inRushCQEndOfDay.log 2>&1',
+	command    : '/home/prod/process/strat/putnam/bin/inRushCQEndOfDayTask.py >> /home/prod/log/task.inRushCQEndOfDayTask.log 2>&1',
 	node       : 'prod01',
 	schedule   : 'On Mon,Tue,Wed,Thu,Fri at 18:00',
 	depends    : ['inRushCQBOD'],
