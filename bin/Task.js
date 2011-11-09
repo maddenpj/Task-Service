@@ -2,9 +2,9 @@ var cp = require('child_process');
 
 var Scheduler = require('../bin/Scheduler.js').Scheduler;
 
-require('/home/prod/src/node/core/Core.js');
+require('/home/prod/bin/node/core/Core.js');
 //require('../../src/core/Alerts.js');
-require('/home/prod/src/node/core/Logging.js');
+require('/home/prod/bin/node/core/Logging.js');
 
 
 function Job() {
