@@ -120,7 +120,6 @@ controlPort.register('load-config', function (filename) {
 });
 
 controlPort.register('date', function () {
-
 	var d = new Date();
 	return d.toLocaleString()+'\n'; 
 });

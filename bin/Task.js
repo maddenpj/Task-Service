@@ -323,14 +323,25 @@ TaskManager.prototype.jobsString = function () {
 	}
 
 	out += '\n---- Current ----\n';
+	list = [];
 	for(var i in this.queue) {
 		var task = this.queue[i];
 		if(task.activeJob !== null) {	
-			var dS = (max - i.length) + 1;
-			out+= i +':';
-			for(var j = 0; j<dS;j++) out+=' ';
-			out+=this.queue[i].activeJob.scheduledTime + ' ' + colorState(this.queue[i].activeJob.state)+'\n';	
+			list.push ({
+				name :  i,
+				time : task.activeJob.startRunTime,
+				state : task.activeJob.state
+			});
 		}
+	}
+	list.sort(function (a,b) {
+		return b.time.getTime() - a.time.getTime();
+	});
+	for(var i = 0; i < list.length; i++) {
+		var dS = (max - i.length) + 1;
+		out+= list[i].name +':';
+		for(var j = 0; j<dS;j++) out+=' ';
+		out+=list[i].time + ' ' + colorState(list[i].state)+'\n';	
 	}
 	return out;
 }
