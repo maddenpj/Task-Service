@@ -7,8 +7,9 @@ if(process.argv[2] === undefined ) {
 	process.exit(0);
 }
 //daemon.start();
-//process.chdir('/home/prod/process/taskService/log/');
-process.chdir('/home/patrick/src/NxtNode/apps/taskservice/log/');
+
+process.chdir('/home/prod/process/taskService/log/');
+//process.chdir('/home/patrick/src/NxtNode/apps/taskservice/log/');
 
 daemon.daemonize('out','out.lock', function (err, pid) { 
 	console.log(err);
@@ -26,8 +27,8 @@ var id = 0;
 var taskManager = new TaskManager();
 
 
-//var configFilePath = '/home/prod/process/taskService/' + process.argv[2];
-var configFilePath = '/home/patrick/src/NxtNode/apps/taskservice/' + process.argv[2];
+var configFilePath = '/home/prod/process/taskService/' + process.argv[2];
+//var configFilePath = '/home/patrick/src/NxtNode/apps/taskservice/' + process.argv[2];
 taskManager.loadConfig(configFilePath);
 //taskManager.loadConfig('./'+process.argv[2]);
 
