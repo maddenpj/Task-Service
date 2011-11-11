@@ -10,6 +10,7 @@ require('/home/prod/bin/node/core/Logging.js');
 function Job() {
 	this.command = '';
 	this.machine = '';
+	this.user = '';
 
 	this.scheduledTime = null;
 	this.startRunTime = null;
@@ -32,15 +33,19 @@ function Task(name,config) {
 	
 	this.activeJob = null;
 	this.scheduledJob = null;
+
+	if(config.runAs === undefined) this.user = defaultUser;
+	else this.user = config.runAs;
 }
 
 Job.prototype.run = function () {
 	var self = this;
 	self.startRunTime = new Date();
 
-	Core.log('Running ssh prod@' +this.machine  +' "'+ this.command+'"');
+	Core.log('Running ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"');
+	console.log('Running ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"');
 	
-	cp.exec('ssh prod@' +this.machine  +' "'+ this.command+'"', function (error, stdout, stderr) {
+	cp.exec('ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"', function (error, stdout, stderr) {
 		if(error === null) {
 			self.rc = 0; 
 			self.state = 'DONE';
@@ -59,13 +64,12 @@ Job.prototype.run = function () {
 }
 
 Task.prototype.spawnJob = function() {
-
 	var job = new Job();
 	job.command = this.command; 
 	job.task = this.name;
 	job.machine = this.node;
 	job.scheduledTime = Scheduler.parse(this.schedule);
-		
+	job.user = this.user;
 	return job;
 }
 
@@ -114,7 +118,6 @@ TaskManager.prototype.runJobs = function () {
 	for(var i in this.queue) {
 		var task = this.queue[i];
 		var job = task.scheduledJob;
- 
 		if(job === undefined || job === null ||  job.scheduledTime === null || job.scheduledTime === undefined ) continue;
 		
 		if( job.scheduledTime.getTime() - now.getTime() <= 0 && job.state === 'SCHD') {
@@ -130,7 +133,6 @@ TaskManager.prototype.runJobs = function () {
 						continue;
 					}
 					if(this.queue[task.depends[j]].activeJob === null) {
-						//console.log(this.queue[task.depends[j]].task)
 						//run = false;
 						continue;
 					}
@@ -226,9 +228,13 @@ TaskManager.prototype.state = function (task,state) {
 	return 'State changed';
 }
 
+//Global Variable... whatever
+var defaultUser;
+
 TaskManager.prototype.loadConfig = function (filename) {
 	if(this.config === null) {
 		this.config = require(filename).Config;
+		defaultUser = this.config.defaultUser;
 		for( var i in this.config.Tasks) {
 			this.queue[i] = new Task(i,this.config.Tasks[i]);
 		}
@@ -243,9 +249,8 @@ TaskManager.prototype.reloadConfig = function (filename) {
 	}
 	var nConfig;
 	try {
-		console.log('trying!');
 		nConfig = require(filename).Config;
-		console.log('done trying!');
+		defaultUser = nConfig.defaultUser;
 	}
 	catch (err) {
 		return (err);
@@ -268,7 +273,7 @@ TaskManager.prototype.reloadConfig = function (filename) {
 		}
 	}
 	this.config = nConfig;
-	return "Config Loaded Successfuly";
+	return "Config: "+filename+" Loaded Successfuly";
 }
 
 
@@ -358,6 +363,7 @@ Job.prototype.clone = function () {
 	cl.rc = this.rc;
 	
 	cl.machine = this.machine;
+	cl.user = this.user
 
 	cl.task = this.task;
 	cl.state = this.state;

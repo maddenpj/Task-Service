@@ -1,14 +1,14 @@
 var CONTROL_PORT = 6666;
 
 var daemon = require('daemon');
-console.log('Daemonizing\nControl port on '+CONTROL_PORT);
 
 if(process.argv[2] === undefined ) {
 	console.log('node TaskService.js <config>');
 	process.exit(0);
 }
 //daemon.start();
-process.chdir('/home/prod/process/taskService/log/');
+//process.chdir('/home/prod/process/taskService/log/');
+process.chdir('/home/patrick/src/NxtNode/apps/taskservice/log/');
 
 daemon.daemonize('out','out.lock', function (err, pid) { 
 	console.log(err);
@@ -25,7 +25,10 @@ var id = 0;
 
 var taskManager = new TaskManager();
 
-taskManager.loadConfig('/home/prod/process/taskService/' + process.argv[2]);
+
+//var configFilePath = '/home/prod/process/taskService/' + process.argv[2];
+var configFilePath = '/home/patrick/src/NxtNode/apps/taskservice/' + process.argv[2];
+taskManager.loadConfig(configFilePath);
 //taskManager.loadConfig('./'+process.argv[2]);
 
 var controlPort = new Control();
@@ -84,6 +87,7 @@ controlPort.register('menu', function () {
 		menuString+= 'set <State> <Task Name>\n    - Set the task\'s state\n';
 		menuString+= 'cancel <Task Name>\n    - Cancels the task\'s scheduled job\n';
 		menuString+= 'cancelD <Task Name>\n    - Cancels and disables the task \n';
+		menuString+= 'reload-config\n    - reloads the Config file \n';
 		menuString+= 'load-config <Config File>\n    - Loads a new Config \n';
 		menuString+= 'date\n    - Current Date/Time\n';
 		menuString+= 'shutdown\n    - Shutsdown the Task Service\n';
@@ -115,11 +119,15 @@ controlPort.register('cancelD', function (task) {
 controlPort.register('shutdown', function () {
 	process.exit(0);
 });
+controlPort.register('reload-config', function () {
+    return taskManager.reloadConfig(configFilePath);
+});
 controlPort.register('load-config', function (filename) {
     return taskManager.reloadConfig(filename);
 });
 
 controlPort.register('date', function () {
+
 	var d = new Date();
 	return d.toLocaleString()+'\n'; 
 });
