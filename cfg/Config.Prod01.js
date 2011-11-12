@@ -3,8 +3,8 @@ exports.Config = {
     defaultUser: 'prod',
 
     Tasks : {
-	researchDataBOD : {
-	    command    : '/home/omni/process/research/data/bin/pushDailyDataToNodesCron.py >> /home/prod/log/task.researchDataBOD.log 2>&1',
+	pushDailyToNodes : {
+	    command    : '/home/omni/process/research/data/bin/pushDailyDataToNodesTask.py >> /home/omni/log/task.pushDailyToNodes.log 2>&1',
 	    runAs      : 'omni',
 	    node       : 'node00',
 	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 06:00',
@@ -12,8 +12,8 @@ exports.Config = {
 	    failPolicy : 'enable' //or 'disable'
 	},
 
-	researchLevel01BOD : {
-	    command    : '/home/omni/process/research/data/bin/pushLevel01ToNodesCron.py >> /home/prod/log/task.researchLevel01BOD.log 2>&1',
+	pushLevel01ToNodes : {
+	    command    : '/home/omni/process/research/data/bin/pushLevel01ToNodesTask.py >> /home/omni/log/task.pushLevel01ToNodes.log 2>&1',
 	    runAs      : 'omni',
 	    node       : 'node00',
 	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 06:05',
@@ -21,8 +21,8 @@ exports.Config = {
 	    failPolicy : 'enable' //or 'disable'
 	},
 
-	researchLevel00BOD : {
-	    command    : '/home/omni/process/research/data/bin/pushLevel00ToNodesCron.py >> /home/prod/log/task.researchLevel00BOD.log 2>&1',
+	pushLevel00ToNodes : {
+	    command    : '/home/omni/process/research/data/bin/pushLevel00ToNodesTask.py >> /home/omni/log/task.pushLevel00ToNodes.log 2>&1',
 	    runAs      : 'omni',
 	    node       : 'node00',
 	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 06:30',
@@ -30,8 +30,8 @@ exports.Config = {
 	    failPolicy : 'enable' //or 'disable'
 	},
 
-	research1MinBOD : {
-	    command    : '/home/omni/process/research/data/bin/push1MinToNodesCron.py >> /home/prod/log/task.research1MinBOD.log 2>&1',
+	push1MinToNodes : {
+	    command    : '/home/omni/process/research/data/bin/push1MinToNodesTask.py >> /home/omni/log/task.push1MinToNodes.log 2>&1',
 	    runAs      : 'omni',
 	    node       : 'node00',
 	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 06:45',
@@ -100,7 +100,7 @@ exports.Config = {
 	},
 
 	inRushCQEOD : {
-	    command    : '/home/prod/process/strat/putnam/bin/inRushCQEndOfDayTask.py >> /home/prod/log/task.inRushCQEndOfDayTask.log 2>&1',
+	    command    : '/home/prod/process/feeds/inRushCQ/bin/inRushCQEndOfDayTask.py >> /home/prod/log/task.inRushCQEndOfDayTask.log 2>&1',
 	    node       : 'prod01',
 	    schedule   : 'On Mon,Tue,Wed,Thu,Fri at 18:00',
 	    depends    : ['inRushCQBOD'],
@@ -108,16 +108,4 @@ exports.Config = {
 	}	
     }
 }
-
-
-			  // 0   2 * * 2,3,4,5,6 ssh prod@prod01 '/home/prod/process/data/bin/dataBeginOfDayTask.py            >> /home/prod/log/task.dataDaily.log     2>&1'
-			  // 0   2 * * 2,3,4,5,6 ssh prod@prod01 '/home/prod/process/data/bin/itchBeginOfDayTask.py            >> /home/prod/log/task.itchDaily.log     2>&1'
-			  // 0  17 * * 2,3,4,5,6 ssh prod@prod01 '/home/prod/process/data/bin/itchEndOfDayTask.py /home/prod/data/Itch4X 2  >> /home/prod/log/task.itchEndOfDay.log   2>&1'
-			  // 0   6 * * 1,2,3,4,5 ssh prod@prod01 '/home/prod/process/brokers/GS/bin/getGSReportsTask.py        >> /home/prod/log/task.getGSReports.log      2>&1'
-			  // 5   6 * * 1,2,3,4,5 ssh prod@prod01 '/home/prod/process/strat/putnam/bin/putnamBeginOfDayTask.py  >> /home/prod/log/task.putnamBeginOfDay.log  2>&1'
-			  // 15  6 * * 1,2,3,4,5 ssh prod@prod01 '/home/prod/process/feeds/inRushCQ/bin/inRushCQBeginOfDayTask.py  >> /home/prod/log/task.inRushCQBeginOfDay.log       2>&1'
-			  // 0   8 * * 1,2,3,4,5 ssh prod@prod01 '/home/prod/process/strat/putnam/bin/putnamGetLocatesTask.py  >> /home/prod/log/task.putnamGetLocates.log  2>&1'
-			  // 0  18 * * 1,2,3,4,5 ssh prod@prod01 '/home/prod/process/strat/putnam/bin/putnamEndOfDayTask.py    >> /home/prod/log/task.putnamEndOfDay.log    2>&1'
-			  // 0  18 * * 1,2,3,4,5 ssh prod@prod01 '/home/prod/process/strat/putnam/bin/inRushCQEndOfDayTask.py  >> /home/prod/log/task.inRushCQEndOfDay.log    2>&1'
-
 
