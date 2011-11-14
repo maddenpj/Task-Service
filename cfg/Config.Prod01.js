@@ -39,6 +39,15 @@ exports.Config = {
 	    failPolicy : 'enable' //or 'disable'
 	},
 
+	researchPutnamCreateBOD : {
+	    command    : '/home/omni/process/research/strat/putnam/bin/putnamCreateBODTask.py.py >> /home/omni/log/task.researchPutnamCreateBOD.log 2>&1',
+	    runAs      : 'omni',
+	    node       : 'node00',
+	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 07:15',
+	    depends    : ['dataBOD', 'itchBOD'],
+	    failPolicy : 'enable' //or 'disable'
+	},
+
 	dataBOD : {
 	    command    : '/home/prod/process/data/bin/dataBgnOfDayTask.py >> /home/prod/log/task.dataBgnOfDayTask.log 2>&1',
 	    node       : 'prod01',
