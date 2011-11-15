@@ -40,7 +40,7 @@ exports.Config = {
 	},
 
 	researchPutnamCreateBOD : {
-	    command    : '/home/omni/process/research/strat/putnam/bin/putnamCreateBODTask.py.py >> /home/omni/log/task.researchPutnamCreateBOD.log 2>&1',
+	    command    : '/home/omni/process/research/strat/putnam/bin/putnamCreateBODTask.py >> /home/omni/log/task.researchPutnamCreateBOD.log 2>&1',
 	    runAs      : 'omni',
 	    node       : 'node00',
 	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 07:15',
