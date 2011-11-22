@@ -4,7 +4,7 @@ var Scheduler = require('../bin/Scheduler.js').Scheduler;
 
 require('/home/prod/bin/node/core/Core.js');
 //require('../../src/core/Alerts.js');
-require('/home/prod/bin/node/core/Logging.js');
+//require('/home/prod/bin/node/core/Logging.js');
 
 
 function Job() {
@@ -27,8 +27,13 @@ function Job() {
 function Task(name,config) { 
 	this.name = name;
 	for(var i in config) {
+		if(i === 'group') continue;
 		this[i] = config[i]
 	}
+	this.group = config.group.split('|')[0];
+	this.dept  = config.group.split('|')[1];
+	
+		
 	this.enabled = true;
 	
 	this.activeJob = null;
@@ -42,19 +47,19 @@ Job.prototype.run = function () {
 	var self = this;
 	self.startRunTime = new Date();
 
-	Core.log('Running ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"');
+	//Core.log('Running ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"');
 	console.log('Running ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"');
 	
 	cp.exec('ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"', function (error, stdout, stderr) {
 		if(error === null) {
 			self.rc = 0; 
 			self.state = 'DONE';
-			Core.log('Job: '+self.task + '@' + self.scheduledTime.toLocaleString()+ ' Succeed!');
+			console.log('Job: '+self.task + '@' + self.scheduledTime.toLocaleString()+ ' Succeed!');
 		}
 		else { 
 			self.rc = error.code;
 			self.state = 'FAIL';
-			Core.log('Job: '+self.task + '@' + self.scheduledTime.toLocaleString() +' Failed!');
+			console.log('Job: '+self.task + '@' + self.scheduledTime.toLocaleString() +' Failed!');
 		}
 		self.stdout = stdout;
 		self.stderr = stderr;
@@ -128,7 +133,7 @@ TaskManager.prototype.runJobs = function () {
 				var run = true;
 				for (var j in task.depends) {
 					if(this.queue[task.depends[j]] === undefined) {
-						Core.log('Invalid Dependency ' + task.depends[j] + ' for ' + task.name);
+						console.log('Invalid Dependency ' + task.depends[j] + ' for ' + task.name);
 						run = false;
 						continue;
 					}
@@ -144,7 +149,7 @@ TaskManager.prototype.runJobs = function () {
 					task.runJob();
 				}
 				else {
-					Core.log('Dependencies not met for ' + task.name + ' Now Waiting');
+					console.log('Dependencies not met for ' + task.name + ' Now Waiting');
 					job.state = 'WAIT';
 				}
 			}
@@ -295,9 +300,45 @@ TaskManager.prototype.toString = function () {
 		out+= ' - '+i+' ';
 		for(var j = 0; j<dS;j++) out+=' ';
 		(this.queue[i].enabled) ? out+= green('Enabled') : out+= red('Disabled');
+		out+= this.queue[i].group + '   '+ this.queue[i].dept;
 		out+= '\n';
 	}
 	return out;
+}
+
+TaskManager.prototype.filter = function (filter) {
+	var out = '----- Tasks - Sorting by ';
+	if(filter.group) {
+		out+= filter.group + ' ';
+		if(filter.dept)
+			out+= ' and '+filter.dept+'\n';
+	}
+	else if (filter.dept) {
+		out += filter.dept + '\n';
+	}
+	else {
+		return 'Invalid Filter';
+	}
+	for(var i in this.queue) {
+		if( i.length > max) max = i.length;
+	}
+	for(var i in this.queue) {
+		if(filter.group) {
+			if(this.queue[i].group !== filter.group) continue;
+		}
+		if(filter.dept) {
+			if(this.queue[i].dept !== filter.dept) continue;
+		}
+		
+		var dS = (max - i.length) + 1;
+		out+= ' - '+i+' ';
+		for(var j = 0; j<dS;j++) out+=' ';
+		(this.queue[i].enabled) ? out+= green('Enabled') : out+= red('Disabled');
+		out+= this.queue[i].group + '   '+ this.queue[i].dept;
+		out+= '\n';
+	}
+	return out;
+
 }
 
 TaskManager.prototype.jobsString = function () {
@@ -407,6 +448,8 @@ Task.prototype.toString = function () {
 	out+='node:         ' + this.node+ '\n';
 	out+='fail policy:  ' + this.failPolicy+ '\n';
 	out+='enabled:      ' + this.enabled+ '\n';
+	out+='group:        ' + this.group+ '\n';
+	out+='department:   ' + this.department+ '\n';
 	if(this.depends !== undefined)
 		out+='depends:      ' + this.depends+'\n';
 

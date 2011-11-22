@@ -1,36 +1,37 @@
 var CONTROL_PORT = 6666;
 
 var daemon = require('daemon');
+var TaskManager = require('../bin/Task.js').TaskManager;
+var Control = require('../bin/Control.js').Control;
 
-if(process.argv[2] === undefined ) {
-	console.log('node TaskService.js <config>');
+
+if(process.argv[3] === undefined ) {
+	console.log('node TaskService.js <Task Config> <Alerts Config>');
 	process.exit(0);
 }
 //daemon.start();
 
-process.chdir('/home/prod/process/taskService/log/');
+//process.chdir('/home/prod/process/taskService/log/');
 //process.chdir('/home/patrick/src/NxtNode/apps/taskservice/log/');
 
-daemon.daemonize('out','out.lock', function (err, pid) { 
+/*daemon.daemonize(getLogName(),'TaskService.lock', function (err, pid) { 
 	console.log(err);
-	console.log(pid);
+	console.log('PID: ' + pid);
 });
+*/
 
-var Task = require('../bin/Task.js').Task;
-var TaskManager = require('../bin/Task.js').TaskManager;
-var Job = require('../bin/Task.js').Job; 
-var Control = require('../bin/Control.js').Control;
-
-var jobs = [];
-var id = 0;
 
 var taskManager = new TaskManager();
 
 
-var configFilePath = '/home/prod/process/taskService/' + process.argv[2];
+var taskConfigFilePath = '/home/prod/process/taskService/' + process.argv[2];
 //var configFilePath = '/home/patrick/src/NxtNode/apps/taskservice/' + process.argv[2];
-taskManager.loadConfig(configFilePath);
+taskManager.loadConfig(taskConfigFilePath);
 //taskManager.loadConfig('./'+process.argv[2]);
+
+var alertConfigFilePath = '/home/prod/process/taskService/' + process.argv[3];
+//var alertConfigFilePath = '/home/patrick/src/NxtNode/apps/taskservice/' + process.argv[3];
+//alertManager.loadConfig(alertConfigFilePath);
 
 var controlPort = new Control();
 Core.log('Control Port on '+CONTROL_PORT);
@@ -63,31 +64,26 @@ controlPort.register('tasks' , function (taskName) {
 		else return taskManager.queue[taskName].toString();
 	}
 });
-controlPort.register('jobs', function (jobName) {
-	if(jobName === undefined) {
-		/*var out = '------ Jobs List ------\n';
-		for(var i = 0; i < jobs.length; i++) {
-			out+= i+': '+ jobs[i].scheduledTime + ' ' + jobs[i].task + ' ' + jobs[i].state+'\n';
-		}
-		return out;*/
+controlPort.register('jobs', function () {
 		return taskManager.jobsString();
-	}
-	else {
-		if(jobs[jobName] === undefined) return 'Job does not exist!'; 
-		return jobs[jobName].toString(jobName);
-	}
 });
 controlPort.register('menu', function () {
 	var menuString = '-------- Task Service --------\n\n';
 		menuString+= 'tasks <Task Name>\n    - Displays the list of tasks or task details if Task Name is given\n\n';
-		menuString+= 'jobs\n    - Displays lists of scheduled jobs and current jobs\n';
+		menuString+= 'group <Group>\n    - Filters the list of task by group\n';
+		menuString+= 'dept  <Department>\n    - Filters the list of tasks by department\n';
+		menuString+= 'filter <Group> <Deptartment>\n    - Filters the list of tasks by group and department\n';
+		menuString+= 'jobs\n    - Displays lists of scheduled jobs and current jobs\n\n';
+		menuString+= '\tTask Options\n'
 		menuString+= 'enable <Task Name>\n    - Enables a job for scheduling\n';
-		menuString+= 'disable <Task Name>\n    - Disables a job for scheduling\n';
+		menuString+= 'disable <Task Name>\n    - Disables a job for scheduling\n\n';
+		menuString+= '\tJob Options\n'
 		menuString+= 'rerun <Task Name>\n    - Reruns the task\'s current job\n';
 		menuString+= 'retry <Task Name>\n    - Restarts Waiting jobs\n';
 		menuString+= 'set <State> <Task Name>\n    - Set the task\'s state\n';
 		menuString+= 'cancel <Task Name>\n    - Cancels the task\'s scheduled job\n';
-		menuString+= 'cancelD <Task Name>\n    - Cancels and disables the task \n';
+		menuString+= 'cancelD <Task Name>\n    - Cancels and disables the task \n\n';
+		menuString+= '\tConfiguration Options\n'
 		menuString+= 'reload-config\n    - reloads the Config file \n';
 		menuString+= 'load-config <Config File>\n    - Loads a new Config \n';
 		menuString+= 'date\n    - Current Date/Time\n';
@@ -132,4 +128,20 @@ controlPort.register('date', function () {
 	var d = new Date();
 	return d.toLocaleString()+'\n'; 
 });
+controlPort.register('group', function (group) {
+    return taskManager.filter({group: group});
+});
+controlPort.register('dept', function (dept) {
+    return taskManager.filter({dept: dept});
+});
+controlPort.register('filter', function (group,dept) {
+    return taskManager.filter({group: group, dept:dept});
+});
 
+function getLogName() {
+	var procElems = process.argv[1].split('/');
+	var appName = procElems.pop();
+	var logNameE = appName.split('.');
+	return 'Log.'+logNameE[0]+'.'+Core.Time.getCurrentDate().toString() + '.'+ Core.Time.getCurrentTime().toString();
+
+}
