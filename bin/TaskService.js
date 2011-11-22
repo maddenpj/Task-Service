@@ -34,12 +34,12 @@ var alertConfigFilePath = '/home/prod/process/taskService/' + process.argv[3];
 //alertManager.loadConfig(alertConfigFilePath);
 
 var controlPort = new Control();
-Core.log('Control Port on '+CONTROL_PORT);
+console.log('Control Port on '+CONTROL_PORT);
 
 controlPort.start(CONTROL_PORT);
 
 process.on('uncaughtException', function(err) {
-	Core.log(err);
+	console.log(err);
 });
 
 function main() {
