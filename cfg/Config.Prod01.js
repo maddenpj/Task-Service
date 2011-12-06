@@ -9,6 +9,7 @@ exports.Config = {
 	    node       : 'node00',
 	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 06:00',
 	    depends    : ['dataBOD'],
+		group	   : 'Research|Data',
 	    failPolicy : 'enable' //or 'disable'
 	},
 
@@ -18,6 +19,7 @@ exports.Config = {
 	    node       : 'node00',
 	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 06:05',
 	    depends    : ['itchBOD'],
+		group	   : 'Research|Data',
 	    failPolicy : 'enable' //or 'disable'
 	},
 
@@ -27,6 +29,7 @@ exports.Config = {
 	    node       : 'node00',
 	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 06:30',
 	    depends    : ['itchBOD'],
+		group	   : 'Research|Data',
 	    failPolicy : 'enable' //or 'disable'
 	},
 
@@ -36,6 +39,7 @@ exports.Config = {
 	    node       : 'node00',
 	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 06:45',
 	    depends    : ['itchBOD'],
+		group	   : 'Research|Data',
 	    failPolicy : 'enable' //or 'disable'
 	},
 
@@ -45,6 +49,7 @@ exports.Config = {
 	    node       : 'node00',
 	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 07:15',
 	    depends    : ['dataBOD', 'itchBOD'],
+		group	   : 'Research|Data',
 	    failPolicy : 'enable' //or 'disable'
 	},
 
@@ -52,6 +57,7 @@ exports.Config = {
 	    command    : '/home/prod/process/data/bin/dataBgnOfDayTask.py >> /home/prod/log/task.dataBgnOfDayTask.log 2>&1',
 	    node       : 'prod01',
 	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 02:00',
+		group	   : 'Prod|Data',
 	    failPolicy : 'enable' //or 'disable'
 	},
 
@@ -59,6 +65,7 @@ exports.Config = {
 	    command    : '/home/prod/process/data/bin/itchBgnOfDayTask.py >> /home/prod/log/task.itchBgnOfDayTask.log 2>&1',
 	    node       : 'prod01',
 	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 02:00',
+		group	   : 'Prod|Data',
 	    failPolicy : 'enable' //or 'disable'
 	},
 
@@ -66,6 +73,7 @@ exports.Config = {
 	    command    : '/home/prod/process/data/bin/itchEndOfDayTask.py /home/prod/data/Itch4X 2 >> /home/prod/log/task.itchEndOfDayTask.log 2>&1',
 	    node       : 'prod01',
 	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 17:00',
+		group	   : 'Prod|Data',
 	    failPolicy : 'enable' //or 'disable'
 	},
 
@@ -73,6 +81,7 @@ exports.Config = {
 	    command    : '/home/prod/process/brokers/GS/bin/getGSReportsTask.py >> /home/prod/log/task.getGSReportsTask.log 2>&1',
 	    node       : 'prod01',
 	    schedule   : 'On Mon,Tue,Wed,Thu,Fri at 06:00',
+		group	   : 'Prod|Data',
 	    failPolicy : 'enable' //or 'disable'
 	},
 
@@ -81,6 +90,7 @@ exports.Config = {
 	    node       : 'prod01',
 	    schedule   : 'On Mon,Tue,Wed,Thu,Fri at 06:05',
 	    depends    : ['dataBOD', 'gsReports'],
+		group	   : 'Prod|Putnam',
 	    failPolicy : 'enable' //or 'disable'
 	},
 
@@ -89,6 +99,7 @@ exports.Config = {
 	    node       : 'prod01',
 	    schedule   : 'On Mon,Tue,Wed,Thu,Fri at 06:15',
 	    depends    : ['putnamBOD'],
+		group	   : 'Prod|All',
 	    failPolicy : 'enable' //or 'disable'
 	},
 
@@ -97,6 +108,7 @@ exports.Config = {
 	    node       : 'prod01',
 	    schedule   : 'On Mon,Tue,Wed,Thu,Fri at 08:00',
 	    depends    : ['putnamBOD'],
+		group	   : 'Prod|Putnam',
 	    failPolicy : 'enable' //or 'disable'
 	},
 
@@ -105,6 +117,7 @@ exports.Config = {
 	    node       : 'prod01',
 	    schedule   : 'On Mon,Tue,Wed,Thu,Fri at 18:00',
 	    depends    : ['putnamBOD'],
+		group	   : 'Prod|Putnam',
 	    failPolicy : 'enable' //or 'disable'
 	},
 
@@ -113,6 +126,7 @@ exports.Config = {
 	    node       : 'prod01',
 	    schedule   : 'On Mon,Tue,Wed,Thu,Fri at 18:00',
 	    depends    : ['inRushCQBOD'],
+		group	   : 'Prod|All',
 	    failPolicy : 'enable' //or 'disable'
 	}	
     }

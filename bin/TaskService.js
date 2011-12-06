@@ -2,7 +2,7 @@ var CONTROL_PORT = 6666;
 
 var daemon = require('daemon');
 var TaskManager = require('../bin/Task.js').TaskManager;
-var Control = require('../bin/Control.js').Control;
+var Control = require('control-port').ControlPort;
 
 
 if(process.argv[3] === undefined ) {
@@ -33,7 +33,7 @@ var alertConfigFilePath = '/home/prod/process/taskService/' + process.argv[3];
 //var alertConfigFilePath = '/home/patrick/src/NxtNode/apps/taskservice/' + process.argv[3];
 //alertManager.loadConfig(alertConfigFilePath);
 
-var controlPort = new Control();
+var controlPort = new Control('TaskService');
 console.log('Control Port on '+CONTROL_PORT);
 
 controlPort.start(CONTROL_PORT);
@@ -138,6 +138,7 @@ controlPort.register('filter', function (group,dept) {
     return taskManager.filter({group: group, dept:dept});
 });
 
+//TODO: Merge into NxtNode::Core::Logging
 function getLogName() {
 	var procElems = process.argv[1].split('/');
 	var appName = procElems.pop();
