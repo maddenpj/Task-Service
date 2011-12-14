@@ -2,7 +2,7 @@ var cp = require('child_process');
 
 var Scheduler = require('../bin/Scheduler.js').Scheduler;
 
-require('/home/prod/bin/node/core/Core.js');
+//require('/home/prod/bin/node/core/Core.js');
 //require('../../src/core/Alerts.js');
 //require('/home/prod/bin/node/core/Logging.js');
 
@@ -32,7 +32,6 @@ function Task(name,config) {
 	}
 	this.group = config.group.split('|')[0];
 	this.dept  = config.group.split('|')[1];
-	
 		
 	this.enabled = true;
 	
@@ -289,40 +288,61 @@ TaskManager.prototype.saveState = function () {
 }
 
 TaskManager.prototype.toString = function () {
-	var out = '------ Task List ------\n\n';
 	var max = 0;
+	var groupMax = 0;
 	for(var i in this.queue) {
 		if( i.length > max) max = i.length;
+		if( this.queue[i].group.length > groupMax) groupMax = this.queue[i].group.length;
 	}
+	
+	groupMax+=2;
+
+	var out = '-- Tasks ';
+	for(var j =0; j<(max-5); j++) out+='-';	
+	out+=' Status --- Group ';
+	for(var j =0; j<(groupMax-5); j++) out+='-';	
+	out+=' Department ----\n';
+
 	for(var i in this.queue) {
 
 		var dS = (max - i.length) + 1;
 		out+= ' - '+i+' ';
 		for(var j = 0; j<dS;j++) out+=' ';
 		(this.queue[i].enabled) ? out+= green('Enabled') : out+= red('Disabled');
-		out+= this.queue[i].group + '   '+ this.queue[i].dept;
-		out+= '\n';
+		out+= '    ' + this.queue[i].group + ' ';
+		var gDS = (groupMax - this.queue[i].group.length) +1;
+		for(var j = 0; j<gDS; j++) out+=' ';
+		out += this.queue[i].dept + '\n';
 	}
 	return out;
 }
 
 TaskManager.prototype.filter = function (filter) {
-	var out = '----- Tasks - Sorting by ';
-	if(filter.group) {
-		out+= filter.group + ' ';
-		if(filter.dept)
-			out+= ' and '+filter.dept+'\n';
-	}
-	else if (filter.dept) {
-		out += filter.dept + '\n';
-	}
-	else {
-		return 'Invalid Filter';
-	}
+	var max = 0;
+	var groupMax = 0;
 	for(var i in this.queue) {
+		if(filter.group) {
+			if(this.queue[i].group !== filter.group) continue;
+		}
+		if(filter.dept) {
+			if(this.queue[i].dept !== filter.dept) continue;
+		}
+		
 		if( i.length > max) max = i.length;
+		if( this.queue[i].group.length > groupMax) groupMax = this.queue[i].group.length;
 	}
+	
+	groupMax+=2;
+	
+	var out = '-- Tasks ';
+	for(var j =0; j<(max-5); j++) out+='-';	
+	out+=' Status --- Group ';
+	for(var j =0; j<(groupMax-5); j++) out+='-';	
+	out+=' Department ----\n';
+
+
 	for(var i in this.queue) {
+		
 		if(filter.group) {
 			if(this.queue[i].group !== filter.group) continue;
 		}
@@ -334,8 +354,10 @@ TaskManager.prototype.filter = function (filter) {
 		out+= ' - '+i+' ';
 		for(var j = 0; j<dS;j++) out+=' ';
 		(this.queue[i].enabled) ? out+= green('Enabled') : out+= red('Disabled');
-		out+= this.queue[i].group + '   '+ this.queue[i].dept;
-		out+= '\n';
+		out+= '    ' + this.queue[i].group + ' ';
+		var gDS = (groupMax - this.queue[i].group.length) +1;
+		for(var j = 0; j<gDS; j++) out+=' ';
+		out += this.queue[i].dept + '\n';
 	}
 	return out;
 
@@ -449,7 +471,7 @@ Task.prototype.toString = function () {
 	out+='fail policy:  ' + this.failPolicy+ '\n';
 	out+='enabled:      ' + this.enabled+ '\n';
 	out+='group:        ' + this.group+ '\n';
-	out+='department:   ' + this.department+ '\n';
+	out+='department:   ' + this.dept+ '\n';
 	if(this.depends !== undefined)
 		out+='depends:      ' + this.depends+'\n';
 
