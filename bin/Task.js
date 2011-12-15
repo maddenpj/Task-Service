@@ -406,7 +406,7 @@ TaskManager.prototype.jobsString = function () {
 		return b.time.getTime() - a.time.getTime();
 	});
 	for(var i = 0; i < list.length; i++) {
-		var dS = (max - i.length) + 1;
+		var dS = (max - list[i].name.length) + 1;
 		out+= list[i].name +':';
 		for(var j = 0; j<dS;j++) out+=' ';
 		out+=list[i].time + ' ' + colorState(list[i].state)+'\n';	

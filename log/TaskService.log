@@ -1,2 +1,8 @@
 null
 PID: 26764
+Running ssh prod@prod01 "/home/prod/process/data/bin/itchEndOfDayTask.py /home/prod/data/Itch4X 2 >> /home/prod/log/task.itchEndOfDayTask.log 2>&1"
+Job: itchEOD@Wed Dec 14 2011 17:00:00 GMT-0600 (CST) Succeed!
+Running ssh prod@prod01 "/home/prod/process/strat/putnam/bin/putnamEndOfDayTask.py >> /home/prod/log/task.putnamEndOfDayTask.log 2>&1"
+Running ssh prod@prod01 "/home/prod/process/feeds/inRushCQ/bin/inRushCQEndOfDayTask.py >> /home/prod/log/task.inRushCQEndOfDayTask.log 2>&1"
+Job: inRushCQEOD@Wed Dec 14 2011 18:00:00 GMT-0600 (CST) Succeed!
+Job: putnamEOD@Wed Dec 14 2011 18:00:00 GMT-0600 (CST) Succeed!

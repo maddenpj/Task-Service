@@ -14,7 +14,7 @@ if(process.argv[2] === undefined ) {
 process.chdir('/home/prod/process/taskService/log/');
 //process.chdir('/home/patrick/src/NxtNode/apps/taskservice/log/');
 
-daemon.daemonize('TaskService.log','TaskService.lock', function (err, pid) { 
+daemon.daemonize('TaskServicetest.log','TaskServicetest.lock', function (err, pid) { 
 	console.log(err);
 	console.log('PID: ' + pid);
 });
