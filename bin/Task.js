@@ -3,6 +3,7 @@ var cp = require('child_process');
 var Scheduler = require('../bin/Scheduler.js').Scheduler;
 
 require('/home/prod/bin/node/core/Core.js');
+
 //require('../../src/core/Alerts.js');
 //require('/home/prod/bin/node/core/Logging.js');
 
@@ -30,6 +31,7 @@ function Task(name,config) {
 		if(i === 'group') continue;
 		this[i] = config[i]
 	}
+
 	this.group = config.group.split('|')[0];
 	this.dept  = config.group.split('|')[1];
 	
@@ -288,6 +290,8 @@ TaskManager.prototype.saveState = function () {
 
 }
 
+
+
 TaskManager.prototype.toString = function () {
 	var out = '------ Task List ------\n\n';
 	var max = 0;
@@ -363,7 +367,7 @@ TaskManager.prototype.jobsString = function () {
 	
 	for(var i = 0; i<list.length; i++) {
 		var dS = (max - list[i].name.length) + 1;
-		out+=list[i].name +':';
+		out+=list[i].name +' ';
 		for(var j = 0; j<dS;j++) out+=' ';
 		out+=list[i].time+ ' ' + colorState(list[i].state)+'\n';
 	}
@@ -385,7 +389,7 @@ TaskManager.prototype.jobsString = function () {
 	});
 	for(var i = 0; i < list.length; i++) {
 		var dS = (max - i.length) + 1;
-		out+= list[i].name +':';
+		out+= list[i].name +' ';
 		for(var j = 0; j<dS;j++) out+=' ';
 		out+=list[i].time + ' ' + colorState(list[i].state)+'\n';	
 	}
