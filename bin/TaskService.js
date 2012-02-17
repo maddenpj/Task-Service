@@ -5,31 +5,32 @@ var TaskManager = require('../bin/Task.js').TaskManager;
 var Control = require('control-port').ControlPort;
 
 
-if(process.argv[3] === undefined ) {
+if(process.argv[2] === undefined ) {
 	console.log('node TaskService.js <Task Config> <Alerts Config>');
 	process.exit(0);
 }
 //daemon.start();
 
-//process.chdir('/home/prod/process/taskService/log/');
+var APPROOT = '/home/prod/bin/NodeTask/'
+process.chdir(APPROOT+'log/');
 //process.chdir('/home/patrick/src/NxtNode/apps/taskservice/log/');
 
-/*daemon.daemonize(getLogName(),'TaskService.lock', function (err, pid) { 
+daemon.daemonize('TaskServicetest.log','TaskServicetest.lock', function (err, pid) { 
 	console.log(err);
 	console.log('PID: ' + pid);
 });
-*/
+
 
 
 var taskManager = new TaskManager();
 
 
-var taskConfigFilePath = '/home/prod/process/taskService/' + process.argv[2];
+var taskConfigFilePath = APPROOT + process.argv[2];
 //var configFilePath = '/home/patrick/src/NxtNode/apps/taskservice/' + process.argv[2];
 taskManager.loadConfig(taskConfigFilePath);
 //taskManager.loadConfig('./'+process.argv[2]);
 
-var alertConfigFilePath = '/home/prod/process/taskService/' + process.argv[3];
+//var alertConfigFilePath = '/home/prod/process/taskService/' + process.argv[3];
 //var alertConfigFilePath = '/home/patrick/src/NxtNode/apps/taskservice/' + process.argv[3];
 //alertManager.loadConfig(alertConfigFilePath);
 
@@ -143,6 +144,6 @@ function getLogName() {
 	var procElems = process.argv[1].split('/');
 	var appName = procElems.pop();
 	var logNameE = appName.split('.');
-	return 'Log.'+logNameE[0]+'.'+Core.Time.getCurrentDate().toString() + '.'+ Core.Time.getCurrentTime().toString();
+//	return 'Log.'+logNameE[0]+'.'+Core.Time.getCurrentDate().toString() + '.'+ Core.Time.getCurrentTime().toString();
 
 }
