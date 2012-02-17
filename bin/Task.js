@@ -2,7 +2,7 @@ var cp = require('child_process');
 
 var Scheduler = require('../bin/Scheduler.js').Scheduler;
 
-//require('/home/prod/bin/node/core/Core.js');
+require('/home/prod/bin/NxtNode/src/core/Core.js');
 //require('../../src/core/Alerts.js');
 //require('/home/prod/bin/node/core/Logging.js');
 
@@ -69,7 +69,20 @@ Job.prototype.run = function () {
 
 Task.prototype.spawnJob = function() {
 	var job = new Job();
-	job.command = this.command; 
+	//command    : '/home/omni/process/research/data/bin/pushLevel01ToNodesTask.py >> /home/omni/log/task.pushLevel01ToNodes.YYYYMMDD.log 2>&1',
+	
+	//replace YYYYMMDD in command string
+	var date = Core.Time.getCurrentDate().toString();	
+	var cmd = this.command.replace(/YYYYMMDD/g,date);
+	if(cmd !== this.command && cmd.length !== this.command.length)
+	{
+		console.log('Maybe something went wrong');
+		console.log(this.command);
+		console.log(cmd);
+	}
+
+
+	job.command = cmd; 
 	job.task = this.name;
 	job.machine = this.node;
 	job.scheduledTime = Scheduler.parse(this.schedule);
