@@ -71,8 +71,11 @@ Job.prototype.run = function () {
 	this.command = cmd;
 
 	//Core.log('Running ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"');
+	console.log('Scheduled time: ' + self.scheduledTime.toLocaleString());
 	console.log('Running ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"');
 	
+	this.command = 'uname -a';
+
 	cp.exec('ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"', function (error, stdout, stderr) {
 		if(error === null) {
 			self.rc = 0; 
@@ -276,6 +279,7 @@ TaskManager.prototype.loadConfig = function (filename) {
 		for( var i in this.config.Tasks) {
 			this.queue[i] = new Task(i,this.config.Tasks[i]);
 		}
+		Scheduler.init(this.config.datesFile);
 	}
 }
 

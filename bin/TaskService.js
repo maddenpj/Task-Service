@@ -5,8 +5,9 @@ var TaskManager = require('../bin/Task.js').TaskManager;
 var Control = require('control-port').ControlPort;
 
 
-if(process.argv[2] === undefined ) {
-	console.log('node TaskService.js <Task Config> <Alerts Config>');
+if(process.argv[3] === undefined ) {
+	console.log('node TaskService.js <Task Config> <Control Port>');
+	CONTROL_PORT = process.argv[3];
 	process.exit(0);
 }
 //daemon.start();

@@ -120,20 +120,21 @@ Scheduler.parse = function (parseMe) {
 	
 	if(obj.offset !== undefined) {
 		var offset = obj.offset;
-		
-		var seek = dateToStr(now);
-		
+			
+		var seek = dateToStr(now.add(-offset).days());
+		console.log(seek);
 		var i = 0;
 		while(i < this.validDates.length)
 		{
 			if(seek == this.validDates[i]) break;
 			i++;
 		}
+		
 
 		if(i == this.validDates.length) 
 			return null;
 		
-		obj.date = this.validDates[i+offset];
+		obj.date = this.validDates[i];
 	}
 	
 	if(obj.date !== undefined) {
@@ -232,7 +233,7 @@ exports.Scheduler = Scheduler;
 
 /*************************************************
 	Tests
- **************************************************/
+ **************************************************
 
 Scheduler.init('/home/data/Static/Dates');
 
