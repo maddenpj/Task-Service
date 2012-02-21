@@ -3,11 +3,27 @@ exports.Config = {
     defaultUser: 'prod',
 	datesFile  : '/home/prod/data/Static/Dates',
 
+    Tasks : {
+
+	/////////////////
+	// Maintenance //
+	/////////////////
+	
+	archiveLogs : {
+	    command    : '/home/prod/NxtProcess/maintenance/archiveLogs.py /home/prod/log >> /home/prod/log/task.archiveLogs.on.YYYYMMDD.log 2>&1',
+	    runAs      : 'prod',
+	    node       : 'prod00',
+	    schedule   : 'On Mon,Tue,Wed,Thu,Fri,Sat,Sun at 00:05',
+	    depends    : ['dataBOD'],
+ 	    group      : 'Prod|Admin',
+	    failPolicy : 'enable' //or 'disable'
+	},
+
+
 	//////////////
 	// Research //
 	//////////////
 
-    Tasks : {
 	pushDailyToNodes : {
 	    command    : '/home/omni/process/research/data/bin/pushDailyDataToNodesTask.py >> /home/omni/log/task.pushDailyToNodes.on.YYYYMMDD.log 2>&1',
 	    runAs      : 'omni',
