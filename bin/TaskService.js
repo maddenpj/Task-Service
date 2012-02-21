@@ -24,7 +24,6 @@ daemon.daemonize('TaskService.log','TaskService.lock', function (err, pid) {
 });
 
 
-
 var taskManager = new TaskManager();
 
 
