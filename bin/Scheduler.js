@@ -122,7 +122,6 @@ Scheduler.parse = function (parseMe) {
 		var offset = obj.offset;
 			
 		var seek = dateToStr(now.add(-offset).days());
-		console.log(seek);
 		var i = 0;
 		while(i < this.validDates.length)
 		{
