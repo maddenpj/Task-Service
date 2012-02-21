@@ -1,7 +1,7 @@
 start = (c:command _* {return c})+ 
 
 
-command = (Every / Between / At / On / In / Date) 
+command = (Every / Between / At / On / In / Date / Offset) 
 
 On = 'on' _+ arg1:(d:day [ ,\/]* {return d})+ {return {on : arg1} }
 
@@ -15,7 +15,9 @@ In = 'in' _+ arg1:(d:month [ ,\/]* {return d})+ {return {in :arg1} }
 
 Date = 'date' _+ arg1:date {return { date: arg1}}
 
+Offset = 'offset' _+ arg1:numoffset { return { offset: arg1}}
 
+numoffset = t:('t+'number) { return t[1] }
 interval = 'seconds' / 'hours' / 'minutes' / 'second' / 'hour' / 'minute'
 time = t:([0-2][0-9]':'[0-5][0-9]) {return t.join('') }
 word = w:[a-zA-Z]+ { return w.join('') }

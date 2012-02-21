@@ -65,6 +65,11 @@ controlPort.register('tasks' , function (taskName) {
 		else return taskManager.queue[taskName].toString();
 	}
 });
+controlPort.register('depends', function (taskName) {
+	if(taskManager.queue[taskName] === undefined) return 'Task does not exist';
+	else return (''+taskManager.queue[taskName].depends);
+
+});
 controlPort.register('jobs', function () {
 		return taskManager.jobsString();
 });
@@ -74,7 +79,8 @@ controlPort.register('menu', function () {
 		menuString+= 'group <Group>\n    - Filters the list of task by group\n';
 		menuString+= 'dept  <Department>\n    - Filters the list of tasks by department\n';
 		menuString+= 'filter <Group> <Deptartment>\n    - Filters the list of tasks by group and department\n';
-		menuString+= 'jobs\n    - Displays lists of scheduled jobs and current jobs\n\n';
+		menuString+= 'jobs\n    - Displays lists of scheduled jobs and current jobs\n';
+		menuString+= 'depends <Task Name>\n    - Displays dependencies for a task\n\n';
 		menuString+= '\tTask Options\n'
 		menuString+= 'enable <Task Name>\n    - Enables a job for scheduling\n';
 		menuString+= 'disable <Task Name>\n    - Disables a job for scheduling\n\n';

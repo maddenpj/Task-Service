@@ -1,6 +1,7 @@
 exports.Config = {
 
     defaultUser: 'prod',
+	datesFile  : '/home/data/static/Dates',
 
     Tasks : {
 	pushDailyToNodes : {
@@ -72,7 +73,7 @@ exports.Config = {
 	itchEOD : {
 	    command    : '/home/prod/NxtProcess/data/itchEndOfDayTask.py /home/prod/data/Itch4X 2 >> /home/prod/log/task.itchEndOfDayTask.on.YYYYMMDD.log 2>&1',
 	    node       : 'prod00',
-	    schedule   : 'On Tue,Wed,Thu,Fri,Sat at 17:00',
+	    schedule   : 'Offset T+1 at 17:00',
  	    group      : 'Prod|Data',
 	    failPolicy : 'enable' //or 'disable'
 	},
@@ -80,7 +81,7 @@ exports.Config = {
 	gsecBOD : {
 	    command    : '/home/prod/NxtProcess/brokers/GSEC/gsecBgnOfDayTask.py >> /home/prod/log/task.gsecBgnOfDay.on.YYYYMMDD.log 2>&1',
 	    node       : 'prod00',
-	    schedule   : 'On Mon,Tue,Wed,Thu,Fri at 06:00',
+	    schedule   : 'Offset T+0 at 06:00',
  	    group      : 'Prod|Broker',
 	    failPolicy : 'enable' //or 'disable'
 	},

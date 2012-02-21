@@ -1,9 +1,18 @@
 var parser = require('../bin/Parser.js');
+var fs = require('fs');
 require('datejs');
 
 
-var Scheduler = {}
+var Scheduler = {
+validDates : ''
+}
 
+
+Scheduler.init = function (datesFile) 
+{
+	this.validDates = fs.readFileSync(datesFile).toString().split('\n');
+	
+}
 
 function unpack(out) {
 	var obj = {};
@@ -22,6 +31,17 @@ function invalid(obj) {
 	if(obj.date !== undefined && (obj.at === undefined && obj.every === undefined )) return true; 
 	
 	return false;
+}
+
+function dateToStr(date) {
+	var str =  '' + date.getFullYear() 
+	var m = date.getMonth()+1;
+	str += (m < 10) ? '0'+m : ''+m;
+
+	var d = date.getDate();
+	str += (d < 10) ? '0'+d : ''+d;
+
+	return str;
 }
 
 function parseDate(date) {
@@ -96,6 +116,24 @@ Scheduler.parse = function (parseMe) {
 	catch (err) {
 		console.log(err);
 		return null;
+	}
+	
+	if(obj.offset !== undefined) {
+		var offset = obj.offset;
+		
+		var seek = dateToStr(now);
+		
+		var i = 0;
+		while(i < this.validDates.length)
+		{
+			if(seek == this.validDates[i]) break;
+			i++;
+		}
+
+		if(i == this.validDates.length) 
+			return null;
+		
+		obj.date = this.validDates[i+offset];
 	}
 	
 	if(obj.date !== undefined) {
@@ -195,7 +233,9 @@ exports.Scheduler = Scheduler;
 
 /*************************************************
 	Tests
-**************************************************
+ **************************************************
+
+Scheduler.init('/home/data/Static/Dates');
 
 var now = new Date();
 
@@ -225,7 +265,10 @@ var UnitTests = [
 			'Every 30 seconds between 10:00 and 14:00 on Mon,Tue',
 			'Every 46 seconds between 02:00 and 03:39 ON Wed', 
 			'Every 46 seconds on Wed', 
-			'At 02:00 on Wed'
+			'At 02:00 on Wed',
+			'Offset T+0 at 16:30',
+			'Offset T+1 at 05:00',
+			'Offset T+23 at 12:00',
 			];
 
 

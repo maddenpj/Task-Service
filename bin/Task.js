@@ -1,4 +1,14 @@
 var cp = require('child_process');
+var email = require('emailjs');
+
+var server = email.server.connect( {
+user: 'patrick@takumi-capital.com',
+password: 'alarmclock',
+host : 'smtp.gmail.com',
+ssl: true
+});
+
+var SENDTO = 'patrick@takumi-capital.com';
 
 var Scheduler = require('../bin/Scheduler.js').Scheduler;
 
@@ -45,6 +55,18 @@ function Task(name,config) {
 Job.prototype.run = function () {
 	var self = this;
 	self.startRunTime = new Date();
+	
+	//replace YYYYMMDD in command string
+	var date = Core.Time.getCurrentDate().toString();	
+	var cmd = this.command.replace(/YYYYMMDD/g,date);
+	
+	if(cmd !== this.command && cmd.length !== this.command.length)
+	{
+		console.log('Maybe something went wrong');
+		console.log(this.command);
+		console.log(cmd);
+	}
+	this.command = cmd;
 
 	//Core.log('Running ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"');
 	console.log('Running ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"');
@@ -59,6 +81,12 @@ Job.prototype.run = function () {
 			self.rc = error.code;
 			self.state = 'FAIL';
 			console.log('Job: '+self.task + '@' + self.scheduledTime.toLocaleString() +' Failed!');
+			
+			server.send( {
+				from : 'prod <prod@takumi-capital.com',
+				to : SENDTO,
+				subject : 'Failed job: ' + self.command
+				});
 		}
 		self.stdout = stdout;
 		self.stderr = stderr;
@@ -71,18 +99,8 @@ Task.prototype.spawnJob = function() {
 	var job = new Job();
 	//command    : '/home/omni/process/research/data/bin/pushLevel01ToNodesTask.py >> /home/omni/log/task.pushLevel01ToNodes.YYYYMMDD.log 2>&1',
 	
-	//replace YYYYMMDD in command string
-	var date = Core.Time.getCurrentDate().toString();	
-	var cmd = this.command.replace(/YYYYMMDD/g,date);
-	if(cmd !== this.command && cmd.length !== this.command.length)
-	{
-		console.log('Maybe something went wrong');
-		console.log(this.command);
-		console.log(cmd);
-	}
-
-
-	job.command = cmd; 
+	
+	//job.command = cmd; 
 	job.task = this.name;
 	job.machine = this.node;
 	job.scheduledTime = Scheduler.parse(this.schedule);
