@@ -224,7 +224,6 @@ Scheduler.parse = function (parseMe) {
 		
 		out = potDates[0];
 	}
-
 	return out;
 }
 
@@ -233,7 +232,7 @@ exports.Scheduler = Scheduler;
 
 /*************************************************
 	Tests
- **************************************************
+ **************************************************/
 
 Scheduler.init('/home/data/Static/Dates');
 
@@ -267,6 +266,7 @@ var UnitTests = [
 			'Every 46 seconds on Wed', 
 			'At 02:00 on Wed',
 			'Offset T+0 at 16:30',
+			'Offset T+0 at 04:30',
 			'Offset T+1 at 05:00',
 			'Offset T+23 at 12:00',
 			];
@@ -287,5 +287,5 @@ for(var i = 0; i < UnitTests.length; i++) {
 	console.log('\n\n\033[37mTest complete --------------------------------------- \033[39m\n\n');
 }
 
-*/
+/**/
 

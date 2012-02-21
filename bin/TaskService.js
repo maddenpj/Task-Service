@@ -11,11 +11,13 @@ if(process.argv[2] === undefined ) {
 }
 //daemon.start();
 
-var APPROOT = '/home/prod/bin/NodeTask/'
+var APPROOT = '/home/patrick/src/NodeTask/';
+var APPROOT = '/home/prod/bin/NodeTask';
+
 process.chdir(APPROOT+'log/');
 //process.chdir('/home/patrick/src/NxtNode/apps/taskservice/log/');
 
-daemon.daemonize('TaskServicetest.log','TaskServicetest.lock', function (err, pid) { 
+daemon.daemonize('TaskService.log','TaskService.lock', function (err, pid) { 
 	console.log(err);
 	console.log('PID: ' + pid);
 });
@@ -41,6 +43,7 @@ controlPort.start(CONTROL_PORT);
 
 process.on('uncaughtException', function(err) {
 	console.log(err);
+	console.log(err.stack);
 });
 
 function main() {
@@ -124,10 +127,12 @@ controlPort.register('shutdown', function () {
 	process.exit(0);
 });
 controlPort.register('reload-config', function () {
-    return taskManager.reloadConfig(configFilePath);
+    return taskManager.reloadConfig(taskConfigFilePath);
 });
 controlPort.register('load-config', function (filename) {
-    return taskManager.reloadConfig(filename);
+    taskConfigFilePath = filename;
+	return taskManager.reloadConfig(filename);
+
 });
 
 controlPort.register('date', function () {

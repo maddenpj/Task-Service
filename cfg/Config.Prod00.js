@@ -81,7 +81,7 @@ exports.Config = {
 	gsecBOD : {
 	    command    : '/home/prod/NxtProcess/brokers/GSEC/gsecBgnOfDayTask.py >> /home/prod/log/task.gsecBgnOfDay.on.YYYYMMDD.log 2>&1',
 	    node       : 'prod00',
-	    schedule   : 'Offset T+0 at 06:00',
+	    schedule   : 'Offset T+0 at 13:00',
  	    group      : 'Prod|Broker',
 	    failPolicy : 'enable' //or 'disable'
 	},
@@ -89,7 +89,7 @@ exports.Config = {
 	putnamXLE_BOD : {
 	    command    : '/home/prod/NxtProcess/strategy/PutnamXLE/putnamXLE_BgnOfDayTask.py >> /home/prod/log/task.putnamXLEBgnOfDay.on.YYYYMMDD.log 2>&1',
 	    node       : 'prod00',
-	    schedule   : 'On Mon,Tue,Wed,Thu,Fri at 06:05',
+	    schedule   : 'Offset T+0 at 06:05',
 	    depends    : ['dataBOD', 'gsecBOD'],
  	    group      : 'Prod|PutnamXLE',
 	    failPolicy : 'enable' //or 'disable'

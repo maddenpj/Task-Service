@@ -13,6 +13,8 @@ var SENDTO = 'patrick@takumi-capital.com';
 var Scheduler = require('../bin/Scheduler.js').Scheduler;
 
 require('/home/prod/bin/NxtNode/src/core/Core.js');
+
+//require('/home/patrick/src/NxtNode/src/core/Core.js');
 //require('../../src/core/Alerts.js');
 //require('/home/prod/bin/node/core/Logging.js');
 
@@ -104,6 +106,7 @@ Task.prototype.spawnJob = function() {
 	job.task = this.name;
 	job.machine = this.node;
 	job.scheduledTime = Scheduler.parse(this.schedule);
+	if(job.scheduledTime === null) return null;
 	job.user = this.user;
 	return job;
 }
