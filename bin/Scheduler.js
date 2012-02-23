@@ -133,7 +133,9 @@ Scheduler.parse = function (parseMe) {
 		if(i == this.validDates.length) 
 			return null;
 		
-		obj.date = this.validDates[i];
+		console.log(obj);		
+	
+		obj.date = dateToStr(Date.today()); 
 	}
 	
 	if(obj.date !== undefined) {
@@ -231,8 +233,8 @@ exports.Scheduler = Scheduler;
 
 
 /*************************************************
-	Tests
- **************************************************
+	Test
+ *************************************************
 
 Scheduler.init('/home/data/Static/Dates');
 
@@ -266,8 +268,10 @@ var UnitTests = [
 			'Every 46 seconds on Wed', 
 			'At 02:00 on Wed',
 			'Offset T+0 at 16:30',
+			'Offset T+0 at 20:30',
 			'Offset T+0 at 04:30',
 			'Offset T+1 at 05:00',
+			'Offset T+1 at 20:00',
 			'Offset T+23 at 12:00',
 			];
 

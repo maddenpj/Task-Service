@@ -1,4 +1,5 @@
-var CONTROL_PORT = 6666;
+var CONTROL_PORT;
+
 
 var daemon = require('daemon');
 var TaskManager = require('../bin/Task.js').TaskManager;
@@ -12,13 +13,13 @@ if(process.argv[3] === undefined ) {
 }
 //daemon.start();
 
-var APPROOT = '/home/patrick/src/NodeTask/';
-var APPROOT = '/home/prod/bin/NodeTask';
+//var APPROOT = '/home/patrick/src/NodeTask/';
+var APPROOT = '/home/prod/bin/NodeTask/';
 
 process.chdir(APPROOT+'log/');
 //process.chdir('/home/patrick/src/NxtNode/apps/taskservice/log/');
 
-daemon.daemonize('TaskService.log','TaskService.lock', function (err, pid) { 
+daemon.daemonize('TaskService3.log','TaskService3.lock', function (err, pid) { 
 	console.log(err);
 	console.log('PID: ' + pid);
 });
@@ -37,9 +38,10 @@ taskManager.loadConfig(taskConfigFilePath);
 //alertManager.loadConfig(alertConfigFilePath);
 
 var controlPort = new Control('TaskService');
-console.log('Control Port on '+CONTROL_PORT);
 
-controlPort.start(CONTROL_PORT);
+console.log('Control Port on '+process.argv[3]);
+controlPort.start(process.argv[3]);
+
 
 process.on('uncaughtException', function(err) {
 	console.log(err);
