@@ -99,7 +99,17 @@ function nextAt(obj,out) {
 	out.set({hour: parseInt(time[0],10), minute: parseInt(time[1],10)});
 }
 
-
+Scheduler.onDateList = function (indate,offset) {
+	var date = new Date(indate); 
+	var seek = dateToStr(date.add(-offset).days());
+	var i = 0;
+	while(i < this.validDates.length)
+	{
+		if(seek == this.validDates[i]) return true;
+		i++;
+	}
+	return false;
+}
 
 Scheduler.parse = function (parseMe) {
 	
@@ -121,21 +131,24 @@ Scheduler.parse = function (parseMe) {
 	if(obj.offset !== undefined) {
 		var offset = obj.offset;
 			
-		var seek = dateToStr(now.add(-offset).days());
-		var i = 0;
-		while(i < this.validDates.length)
+		var wantToday = Date.parse('today at '+ obj.at);
+
+		if(wantToday.isBefore(now) || (!this.onDateList(wantToday,0)&&this.onDateList(wantToday,offset)))
 		{
-			if(seek == this.validDates[i]) break;
-			i++;
+			var count = 0;
+			do
+			{
+				if(count === 10000000) {
+					return null;
+				}
+				wantToday = wantToday.next().day();
+			}
+			while(!this.onDateList(wantToday, offset) );
 		}
 		
-
-		if(i == this.validDates.length) 
-			return null;
 		
-		console.log(obj);		
-	
-		obj.date = dateToStr(Date.today()); 
+
+		return wantToday;
 	}
 	
 	if(obj.date !== undefined) {
@@ -267,12 +280,13 @@ var UnitTests = [
 			'Every 46 seconds between 02:00 and 03:39 ON Wed', 
 			'Every 46 seconds on Wed', 
 			'At 02:00 on Wed',
-			'Offset T+0 at 16:30',
-			'Offset T+0 at 20:30',
+			'Offset T+0 at 04:30',
+			'Offset T+0 at 22:30',
 			'Offset T+0 at 04:30',
 			'Offset T+1 at 05:00',
-			'Offset T+1 at 20:00',
-			'Offset T+23 at 12:00',
+			'Offset T+1 at 23:00',
+			'Offset T+5 at 03:00',
+			'Offset T+5 at 13:00',
 			];
 
 
