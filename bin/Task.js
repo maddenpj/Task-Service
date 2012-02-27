@@ -74,7 +74,6 @@ Job.prototype.run = function () {
 	console.log('Scheduled time: ' + self.scheduledTime.toLocaleString());
 	console.log('Running ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"');
 	
-	this.command = 'uname -a';
 
 	cp.exec('ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"', function (error, stdout, stderr) {
 		if(error === null) {
@@ -102,10 +101,8 @@ Job.prototype.run = function () {
 
 Task.prototype.spawnJob = function() {
 	var job = new Job();
-	//command    : '/home/omni/process/research/data/bin/pushLevel01ToNodesTask.py >> /home/omni/log/task.pushLevel01ToNodes.YYYYMMDD.log 2>&1',
 	
-	
-	//job.command = cmd; 
+	job.command = this.command;
 	job.task = this.name;
 	job.machine = this.node;
 	job.scheduledTime = Scheduler.parse(this.schedule);

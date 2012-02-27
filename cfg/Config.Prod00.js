@@ -260,7 +260,7 @@ exports.Config = {
 	},
 
 	gsAnalytics : {
-	    command    : '/home/prod/bin/gsecPnlTask.js >> /home/prod/log/task.gsecPnlTask.on.YYYYMMDD.log 2>&1',
+	    command    : '/home/prod/NxtProcess/brokers/gsecPnlTask.js >> /home/prod/log/task.gsecPnlTask.on.YYYYMMDD.log 2>&1',
 	    node       : 'prod00',
 	    schedule   : 'Offset T+0 at 19:10',
  	    group      : 'Prod|Broker',
