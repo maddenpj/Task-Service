@@ -74,6 +74,16 @@ exports.Config = {
 	    failPolicy : 'enable' //or 'disable'
 	},
 
+	dailySims : {
+	    command    : '/home/omni/process/tracking/scripts/dailySimTask.js >> /home/omni/log/task.dailySimTask.on.YYYYMMDD.log 2>&1',
+	    runAs      : 'omni',
+	    node       : 'node00',
+	    schedule   : 'Offset T+1 at 07:35',
+	    depends    : ['researchPutnamCreateBOD'],
+ 	    group      : 'Research|Strategy',
+	    failPolicy : 'enable' //or 'disable'
+	},
+	
 	///////////////////////
 	// Data Begin-of-Day //
 	///////////////////////
@@ -171,6 +181,16 @@ exports.Config = {
 	    failPolicy : 'enable' //or 'disable'
 	},
 
+	bbStartPosData : {
+	    command    : '/home/prod/NxtProcess/trading/bloombergDataTask.py >> /home/prod/log/task.bloombergData.on.YYYYMMDD.log 2>&1',
+	    node       : 'prod00',
+	    schedule   : 'Offset T+0 at 06:45',
+	    depends    : ['gsecBOD'],
+ 	    group      : 'Prod|Data',
+	    failPolicy : 'enable' //or 'disable'
+	},
+	
+
 	/////////////////
 	// Price Feeds //
 	/////////////////
@@ -251,6 +271,24 @@ exports.Config = {
 	    failPolicy : 'enable' //or 'disable'
 	},
 	
+	putnamXLE_EOD : {
+	    command    : '/home/prod/NxtProcess/strategy/PutnamXLE/putnamXLE_EndOfDayTask.py >> /home/prod/log/task.putnamXLEEndOfDay.on.YYYYMMDD.log 2>&1',
+	    node       : 'prod00',
+	    schedule   : 'Offset T+0 at 18:20',
+	    depends    : ['putnamXLE_BOD'],
+ 	    group      : 'Prod|PutnamXLE',
+	    failPolicy : 'enable' //or 'disable'
+	},
+
+	factor_EOD : {
+	    command    : '/home/prod/NxtProcess/strategy/Factor/factor_EndOfDayTask.py >> /home/prod/log/task.factorEndOfDay.on.YYYYMMDD.log 2>&1',
+	    node       : 'prod00',
+	    schedule   : 'Offset T+0 at 18:20',
+	    depends    : ['factor_BOD'],
+ 	    group      : 'Prod|Factor',
+	    failPolicy : 'enable' //or 'disable'
+	},
+
 	gsGetReports : {
 	    command    : '/home/prod/NxtProcess/brokers/GSEC/gsecGetReportsTask.py >> /home/prod/log/task.gsecGetReports.on.YYYYMMDD.log 2>&1',
 	    node       : 'prod00',
@@ -260,7 +298,7 @@ exports.Config = {
 	},
 
 	gsAnalytics : {
-	    command    : '/home/prod/NxtProcess/brokers/gsecPnlTask.js >> /home/prod/log/task.gsecPnlTask.on.YYYYMMDD.log 2>&1',
+	    command    : '/home/prod/NxtProcess/brokers/GSEC/gsecPnlTask.js >> /home/prod/log/task.gsecPnlTask.on.YYYYMMDD.log 2>&1',
 	    node       : 'prod00',
 	    schedule   : 'Offset T+0 at 19:10',
  	    group      : 'Prod|Broker',

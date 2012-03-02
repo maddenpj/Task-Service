@@ -8,7 +8,7 @@ host : 'smtp.gmail.com',
 ssl: true
 });
 
-var SENDTO = 'patrick@takumi-capital.com';
+var SENDTO = 'patrick@takumi-capital.com, sudhir@takumi-capital.com, zamir@takumi-capital.com';
 
 var Scheduler = require('../bin/Scheduler.js').Scheduler;
 
@@ -87,10 +87,11 @@ Job.prototype.run = function () {
 			console.log('Job: '+self.task + '@' + self.scheduledTime.toLocaleString() +' Failed!');
 			
 			server.send( {
-				from : 'prod <prod@takumi-capital.com',
+				from : 'prod <prod@takumi-capital.com>',
 				to : SENDTO,
-				subject : 'Failed job: ' + self.command
-				});
+				subject : 'Failed job: ' + self.command,
+				text : 'Job failed with code: ' + self.rc
+				},function( err) { console.log(err) } );
 		}
 		self.stdout = stdout;
 		self.stderr = stderr;
