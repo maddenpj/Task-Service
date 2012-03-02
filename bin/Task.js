@@ -178,6 +178,9 @@ TaskManager.prototype.runJobs = function () {
 					else {
 						run = run && (this.queue[task.depends[j]].activeJob.state === 'DONE');
 					}
+					if(this.queue[task.depends[j]].scheduledJob !== undefined) {
+						if(this.queue[task.depends[j]].scheduledJob.state === 'WAIT') run = false;
+					}
 				}
 				if(run) {
 					task.runJob();
