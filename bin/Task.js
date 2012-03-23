@@ -13,6 +13,7 @@ var SENDTO = 'patrick@takumi-capital.com, sudhir@takumi-capital.com, zamir@takum
 var Scheduler = require('../bin/Scheduler.js').Scheduler;
 
 require('/home/prod/bin/NxtNode/src/core/Core.js');
+require('/home/prod/bin/NxtNode/src/core/Email.js');
 
 //require('/home/patrick/src/NxtNode/src/core/Core.js');
 //require('../../src/core/Alerts.js');
@@ -85,13 +86,11 @@ Job.prototype.run = function () {
 			self.rc = error.code;
 			self.state = 'FAIL';
 			console.log('Job: '+self.task + '@' + self.scheduledTime.toLocaleString() +' Failed!');
-			
-			server.send( {
-				from : 'prod <prod@takumi-capital.com>',
-				to : SENDTO,
-				subject : 'Failed job: ' + self.command,
-				text : 'Job failed with code: ' + self.rc
-				},function( err) { console.log(err) } );
+		
+			Core.Email.mail(Core.Email.all,
+							'TaskService: '+self.task +' Failed!',
+							'Job: '+self.task + '@' + self.scheduledTime.toLocaleString() +' Failed!'); 
+
 		}
 		self.stdout = stdout;
 		self.stderr = stderr;
