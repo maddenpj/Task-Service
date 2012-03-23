@@ -18,6 +18,15 @@ exports.Config = {
  	    group      : 'Prod|Admin',
 	    failPolicy : 'enable' //or 'disable'
 	},
+	
+	spyDividendMsg : {
+	    command    : 'echo "SPY Dividend Today" | /home/prod/NxtProcess/maintenance/mail.js',
+	    runAs      : 'prod',
+	    node       : 'prod00',
+	    schedule   : 'Date 20120316 at 07:15',
+ 	    group      : 'Prod|Admin',
+	    failPolicy : 'enable' //or 'disable'
+	},
 
 
 	//////////////
@@ -75,9 +84,8 @@ exports.Config = {
 	},
 
 	dailySims : {
-	    command    : '/home/omni/process/tracking/scripts/dailySimTask.js >> /home/omni/log/task.dailySimTask.on.YYYYMMDD.log 2>&1',
-	    runAs      : 'omni',
-	    node       : 'node00',
+	    command    : '/home/prod/NxtProcess/research/tracking/dailySimTask.js >> /home/prod/log/task.dailySimTask.on.YYYYMMDD.log 2>&1',
+	    node       : 'prod00',
 	    schedule   : 'Offset T+1 at 07:35',
 	    depends    : ['researchPutnamCreateBOD'],
  	    group      : 'Research|Strategy',
@@ -127,7 +135,7 @@ exports.Config = {
 	gsecGetLocates : {
 	    command    : '/home/prod/NxtProcess/brokers/GSEC/gsecGetLocatesTask.py >> /home/prod/log/task.gsecGetLocates.on.YYYYMMDD.log 2>&1',
 	    node       : 'prod00',
-	    schedule   : 'Offset T+0 at 08:00',
+	    schedule   : 'Offset T+0 at 06:55',
  	    group      : 'Prod|Broker',
 	    failPolicy : 'enable' //or 'disable'
 	},

@@ -42,6 +42,7 @@ function Task(name,config) {
 		if(i === 'group') continue;
 		this[i] = config[i]
 	}
+	
 	this.group = config.group.split('|')[0];
 	this.dept  = config.group.split('|')[1];
 		
@@ -278,6 +279,7 @@ TaskManager.prototype.loadConfig = function (filename) {
 		this.config = require(filename).Config;
 		defaultUser = this.config.defaultUser;
 		for( var i in this.config.Tasks) {
+			console.log(i);
 			this.queue[i] = new Task(i,this.config.Tasks[i]);
 		}
 		Scheduler.init(this.config.datesFile);

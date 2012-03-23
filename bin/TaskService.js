@@ -15,6 +15,7 @@ if(process.argv[3] === undefined ) {
 
 //var APPROOT = '/home/patrick/src/NodeTask/';
 var APPROOT = '/home/prod/bin/NodeTask/';
+var taskConfigFilePath = APPROOT + process.argv[2];
 
 process.chdir(APPROOT+'log/');
 //process.chdir('/home/patrick/src/NxtNode/apps/taskservice/log/');
@@ -28,7 +29,6 @@ daemon.daemonize('TaskService3.log','TaskService3.lock', function (err, pid) {
 var taskManager = new TaskManager();
 
 
-var taskConfigFilePath = APPROOT + process.argv[2];
 //var configFilePath = '/home/patrick/src/NxtNode/apps/taskservice/' + process.argv[2];
 taskManager.loadConfig(taskConfigFilePath);
 //taskManager.loadConfig('./'+process.argv[2]);
