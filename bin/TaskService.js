@@ -13,12 +13,10 @@ if(process.argv[3] === undefined ) {
 }
 //daemon.start();
 
-//var APPROOT = '/home/patrick/src/NodeTask/';
-var APPROOT = '/home/prod/bin/NodeTask/';
+var APPROOT = '/home/patrick/src/NodeTask/';
 var taskConfigFilePath = APPROOT + process.argv[2];
 
 process.chdir(APPROOT+'log/');
-//process.chdir('/home/patrick/src/NxtNode/apps/taskservice/log/');
 
 daemon.daemonize('TaskService3.log','TaskService3.lock', function (err, pid) { 
 	console.log(err);
@@ -29,13 +27,7 @@ daemon.daemonize('TaskService3.log','TaskService3.lock', function (err, pid) {
 var taskManager = new TaskManager();
 
 
-//var configFilePath = '/home/patrick/src/NxtNode/apps/taskservice/' + process.argv[2];
 taskManager.loadConfig(taskConfigFilePath);
-//taskManager.loadConfig('./'+process.argv[2]);
-
-//var alertConfigFilePath = '/home/prod/process/taskService/' + process.argv[3];
-//var alertConfigFilePath = '/home/patrick/src/NxtNode/apps/taskservice/' + process.argv[3];
-//alertManager.loadConfig(alertConfigFilePath);
 
 var controlPort = new Control('TaskService');
 
@@ -152,7 +144,6 @@ controlPort.register('filter', function (group,dept) {
     return taskManager.filter({group: group, dept:dept});
 });
 
-//TODO: Merge into NxtNode::Core::Logging
 function getLogName() {
 	var procElems = process.argv[1].split('/');
 	var appName = procElems.pop();

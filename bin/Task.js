@@ -1,24 +1,20 @@
 var cp = require('child_process');
-var email = require('emailjs');
-
-var server = email.server.connect( {
-user: 'patrick@takumi-capital.com',
-password: 'alarmclock',
-host : 'smtp.gmail.com',
-ssl: true
-});
-
-var SENDTO = 'patrick@takumi-capital.com, sudhir@takumi-capital.com, zamir@takumi-capital.com';
 
 var Scheduler = require('../bin/Scheduler.js').Scheduler;
 
-require('/home/prod/bin/NxtNode/src/core/Core.js');
-require('/home/prod/bin/NxtNode/src/core/Email.js');
 
-//require('/home/patrick/src/NxtNode/src/core/Core.js');
-//require('../../src/core/Alerts.js');
-//require('/home/prod/bin/node/core/Logging.js');
+var getCurrentDate = function () {
+	var myDate = new Date();
+	var mm =  myDate.getMonth()+1 ;
+	var dd =  myDate.getDate()
+	var yyyy =  myDate.getFullYear();
 
+	var datestring = ''+yyyy;
+	datestring += ( ( mm ) < 10) ? '0'+ mm : ''+mm;
+	datestring += ( dd < 10) ? '0'+dd : ''+dd;
+	return datestring;
+
+}
 
 function Job() {
 	this.command = '';
@@ -61,7 +57,7 @@ Job.prototype.run = function () {
 	self.startRunTime = new Date();
 	
 	//replace YYYYMMDD in command string
-	var date = Core.Time.getCurrentDate().toString();	
+	var date = getCurrentDate();	
 	var cmd = this.command.replace(/YYYYMMDD/g,date);
 	
 	if(cmd !== this.command && cmd.length !== this.command.length)
@@ -72,12 +68,11 @@ Job.prototype.run = function () {
 	}
 	this.command = cmd;
 
-	//Core.log('Running ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"');
 	console.log('Scheduled time: ' + self.scheduledTime.toLocaleString());
 	console.log('Running ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"');
 	
 
-	cp.exec('ssh '+this.user+'@' +this.machine  +' "'+ this.command+'"', function (error, stdout, stderr) {
+	cp.exec('ssh -Y '+this.user+'@' +this.machine  +' "'+ this.command+'"', function (error, stdout, stderr) {
 		if(error === null) {
 			self.rc = 0; 
 			self.state = 'DONE';
@@ -88,9 +83,6 @@ Job.prototype.run = function () {
 			self.state = 'FAIL';
 			console.log('Job: '+self.task + '@' + self.scheduledTime.toLocaleString() +' Failed!');
 		
-			Core.Email.mail(Core.Email.all,
-							'TaskService: '+self.task +' Failed!',
-							'Job: '+self.task + '@' + self.scheduledTime.toLocaleString() +' Failed!'); 
 
 		}
 		self.stdout = stdout;
